@@ -1,78 +1,138 @@
-# E-Commerce Microservices Project
+# 🛒 E-Commerce Microservices Ecosystem
 
-A robust, distributed e-commerce application built using **Spring Boot** and **Spring Cloud**. This project demonstrates microservices patterns including service discovery, inter-service communication via OpenFeign, and independent database management.
+[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025-blue.svg)](https://spring.io/projects/spring-cloud)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0-blue.svg)](https://www.mysql.com/)
 
-## 🚀 Architecture Overview
+A modern, highly-scalable distributed e-commerce application built with a **Cloud-Native** approach. This project showcases the implementation of a microservices architecture using the Netflix OSS stack for service discovery and Spring Cloud for seamless integration.
 
-This project follows a microservices architecture where each business capability is encapsulated in its own service with its own dedicated database.
+---
 
-### Core Services
+## 🏗️ System Architecture
 
-1.  **Service Registry (Eureka Server)**: acts as the phonebook for all services.
-2.  **User Service**: Manages accounts and credentials.
-3.  **Product Service**: Handles the product catalog and inventory.
-4.  **Cart Service**: Manages temporary shopping sessions.
-5.  **Order Service**: Orchestrates the conversion of carts into orders.
-6.  **Payment Service**: Processes financial transactions.
-7.  **Shipping Service**: Manages logistics and delivery status.
-8.  **Favourite Service**: handles user wishlists.
+This project follows the **Database-per-Service** pattern, ensuring each service is fully decoupled, independently deployable, and scalable.
 
-## 🛠️ Tech Stack
+```mermaid
+graph TD
+    subgraph "Service Registry"
+        Eureka[Eureka Server :8761]
+    end
 
-- **Java 17**
-- **Spring Boot 3.x**
-- **Spring Cloud (Eureka, OpenFeign, LoadBalancer)**
-- **MySQL Server** (Persistence)
-- **Lombok** (Boilerplate reduction)
-- **MapStruct** (Service-DTO mapping)
-- **Maven** (Build Tool)
+    subgraph "Core Microservices"
+        User[User Service :8050]
+        Product[Product Service :8051]
+    end
 
-## 📡 Service Port Mapping
+    subgraph "Business Logic Layer"
+        Cart[Cart Service :8052]
+        Favourite[Favourite Service :8056]
+        Order[Order Service :8053]
+    end
 
-| Service           | Port | Responsibility              |
-| :---------------- | :--- | :-------------------------- |
-| Eureka Server     | 8761 | Discovery Registry          |
-| User Service      | 8050 | User & Auth Management      |
-| Product Service   | 8051 | Catalog Management          |
-| Cart Service      | 8052 | Shopping Cart Management    |
-| Order Service     | 8053 | Order Processing            |
-| Payment Service   | 8054 | Transaction Processing      |
-| Shipping Service  | 8055 | Logistics & Status Tracking |
-| Favourite Service | 8056 | Wishlist Management         |
+    subgraph "Fulfillment Layer"
+        Payment[Payment Service :8054]
+        Shipping[Shipping Service :8055]
+    end
+
+    User --- Eureka
+    Product --- Eureka
+    Cart --- Eureka
+    Order --- Eureka
+    Payment --- Eureka
+    Shipping --- Eureka
+    Favourite --- Eureka
+
+    Order -.->|Feign| User
+    Order -.->|Feign| Product
+    Order -.->|Feign| Cart
+    Payment -.->|Feign| Order
+    Shipping -.->|Feign| Order
+    Cart -.->|Feign| Product
+```
+
+---
+
+## 🛠️ Technology Stack
+
+| Category       | Tools & Technologies                                        |
+| :------------- | :---------------------------------------------------------- |
+| **Frameworks** | Spring Boot 3.x, Spring Data JPA, Spring Web                |
+| **Cloud**      | Eureka (Discovery), OpenFeign (Communication), LoadBalancer |
+| **Database**   | MySQL (8.x)                                                 |
+| **Utilities**  | Lombok, MapStruct (DTO Mapping), SLF4J (Logging)            |
+| **Build Tool** | Maven                                                       |
+
+---
+
+## 📡 Service Catalog
+
+| Service               | Port   | Database          | Primary Responsibility                   |
+| :-------------------- | :----- | :---------------- | :--------------------------------------- |
+| **Eureka Server**     | `8761` | N/A               | Centralized Service Registry & Discovery |
+| **User Service**      | `8050` | `ecomuserms`      | Identity management & Role-based access  |
+| **Product Service**   | `8051` | `ecomproductms`   | Global product catalog & Stock control   |
+| **Cart Service**      | `8052` | `ecomcartms`      | Persistent shopping sessions per user    |
+| **Order Service**     | `8053` | `ecomorderms`     | Checkout orchestration & Flow management |
+| **Payment Service**   | `8054` | `ecompaymentms`   | Secure transaction processing            |
+| **Shipping Service**  | `8055` | `ecomshippingms`  | Logistic tracking & delivery scheduling  |
+| **Favourite Service** | `8056` | `ecomfavouritems` | User-specific product wishlists          |
+
+---
 
 ## 🏁 Getting Started
 
-### Prerequisites
+### 1. Prerequisites
 
-- Install **Java 17** or higher.
-- Install **Maven**.
-- **MySQL Server** running on `localhost:3306` (User: `root`, Pass: `root`).
+- **Java 17 Development Kit**
+- **Maven 3.6+**
+- **MySQL Server** (Running on port 3306)
 
-### Startup Sequence
+### 2. Database Setup
 
-To ensure smooth communication, start the services in this order:
+Ensure MySQL is running. Configuration is set to `createDatabaseIfNotExist=true`, so schemas will be created automatically upon service startup if credentials are correct (`root/root`).
 
-1.  **Eureka Server**: Navigate to `eureka-server` and run `mvn spring-boot:run`.
-2.  **Base Services**: Start `user-service` and `product-service`.
-3.  **Business Services**: Start `cart-service`, `favourite-service`, and `order-service`.
-4.  **Finalization Services**: Start `payment-service` and `shipping-service`.
+### 3. Startup Order (Priority)
 
-## 🧪 Testing the Flow
+To avoid registration delays, follow this sequence:
 
-For detailed testing steps and example JSON payloads, refer to the [TESTING_ENDPOINTS.txt](./TESTING_ENDPOINTS.txt) file in the root directory.
+1.  **Eureka Server** (Wait for Dashboard at http://localhost:8761)
+2.  **User & Product Services** (Critical data providers)
+3.  **Cart & Order Services**
+4.  **Payment & Shipping Services**
 
-### High-Level Test Path:
+---
 
-1.  **Register User** -> `POST /api/users`
-2.  **Create Product** -> `POST /products`
-3.  **Add to Cart** -> `POST /cart`
-4.  **Place Order** -> `POST /orders`
-5.  **Make Payment** -> `POST /payments`
-6.  **Ship Order** -> `POST /shipping`
+## 🧪 Testing End-to-End Flow
 
-## 🛡️ Key Features
+For step-by-step API documentation and full JSON payloads, refer to the [**TESTING_ENDPOINTS.txt**](./TESTING_ENDPOINTS.txt) guide.
 
-- **Decoupled Databases**: Each service has its own database schema, ensuring true independence.
-- **Service Discovery**: Services find each other dynamically via Eureka.
-- **Feign Clients**: Type-safe REST clients for seamless inter-service communication.
-- **Centralized Logging**: Consistent logging across all layers using SLF4J and Logback.
+### The Checkout Workflow:
+
+1. **Identity**: Create a user with credentials.
+2. **Catalog**: Populate products with price and stock.
+3. **Session**: Add items to the cart for a specific user ID.
+4. **Checkout**: Trigger the Order service (it will pull data from Cart/Product/User).
+5. **Finalize**: Process Payment and initiate Shipping.
+
+---
+
+## 🛡️ Key Architectural Patterns
+
+- **Service Discovery**: Automatic detection of service instances without hardcoded URLs.
+- **Declarative REST**: Using Feign interfaces to call other services as if they were local methods.
+- **Data Integrity**: Bidirectional JPA mappings and transactional consistency.
+- **Validation**: Strict entry validation using `jakarta.validation`.
+
+---
+
+## 🚀 Future Roadmap
+
+- [ ] Implement **Spring Cloud Gateway** for a single entry point.
+- [ ] Add **Resilience4j** Circuit Breakers for fault tolerance.
+- [ ] Centralize configuration using **Spring Cloud Config Server**.
+- [ ] Implement **Distributed Tracing** with Micrometer & Zipkin.
+
+---
+
+Developed by **Harish Nampally**
