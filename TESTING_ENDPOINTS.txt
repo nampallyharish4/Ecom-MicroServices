@@ -16,13 +16,13 @@ PREREQUISITES:
 [POST] http://localhost:8050/api/users
 Payload:
 {
-  "firstName": "John",
-  "lastName": "Doe",
-  "emailAddress": "john.doe@example.com",
+  "firstName": "Harish",
+  "lastName": "Nampally",
+  "emailAddress": "[EMAIL_ADDRESS]",
   "contact": "9876543210",
   "credential": {
-    "username": "johndoe",
-    "password": "password123",
+    "username": "harishnampally",
+    "password": "[PASSWORD]",
     "roleBasedAuthority": "ROLE_USER"
   }
 }
