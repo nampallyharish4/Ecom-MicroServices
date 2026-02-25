@@ -34,7 +34,8 @@ public class Credential {
 	private User user;
 	
 	public Credential() {
-		// TODO Auto-generated constructor stub
+		// Constructor
+
 	}
 
 	public Integer getCredentialId() {

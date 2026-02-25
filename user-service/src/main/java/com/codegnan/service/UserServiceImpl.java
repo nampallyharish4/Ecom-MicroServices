@@ -14,6 +14,7 @@ import com.codegnan.repository.UserRepository;
 import jakarta.transaction.Transactional;
 
 @Service
+@SuppressWarnings("null")
 public class UserServiceImpl implements UserService{
 
 	private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -37,7 +38,7 @@ public class UserServiceImpl implements UserService{
 		Credential credential = user.getCredential();
 		log.debug("Fetched credential object from user");
 
-		//TODO : we are providing original password in db but we need to store in encoded password
+
 		
 		// BiDirectional
 		credential.setUser(user); 

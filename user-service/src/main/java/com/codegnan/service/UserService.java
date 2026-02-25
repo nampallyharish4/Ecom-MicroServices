@@ -1,7 +1,7 @@
 package com.codegnan.service;
 
 import com.codegnan.dto.UserDto;
-import com.codegnan.models.User;
+
 
 public interface UserService {
 

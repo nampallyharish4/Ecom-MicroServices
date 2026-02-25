@@ -15,5 +15,7 @@ public interface UserMapper {
 	
 	@Mapping(source = "emailAddress",target = "email")
 	@Mapping(source = "contact",target = "phone")
+	@Mapping(target = "credential.credentialId", ignore = true)
+	@Mapping(target = "credential.user", ignore = true)
 	User toEntity(UserDto userDto);
 }

@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @AllArgsConstructor
 @Slf4j
+@SuppressWarnings("null")
 public class FavouriteServiceImpl implements FavouriteService {
 
 	private FavouriteRepository favouriteRepository;
