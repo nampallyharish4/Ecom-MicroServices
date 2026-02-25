@@ -13,12 +13,9 @@ services:
   # Configuration Server
   config-server:
     build: ./config-server
+    container_name: config-server
     ports:
       - '8888:8888'
-    depends_on:
-      - eureka-server
-    environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     networks:
       - ecom-network
     restart: always
