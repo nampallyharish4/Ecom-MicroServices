@@ -1,0 +1,75 @@
+modules = ["java-graalvm22.3"]
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+packages = ["mysql80"]
+
+[[ports]]
+localPort = 3306
+externalPort = 3000
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 8050
+externalPort = 3001
+
+[[ports]]
+localPort = 8051
+externalPort = 3002
+
+[[ports]]
+localPort = 8052
+externalPort = 4200
+
+[[ports]]
+localPort = 8053
+externalPort = 5173
+
+[[ports]]
+localPort = 8054
+externalPort = 6000
+
+[[ports]]
+localPort = 8055
+externalPort = 6800
+
+[[ports]]
+localPort = 8056
+externalPort = 5000
+
+[[ports]]
+localPort = 8082
+externalPort = 3003
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bash /home/runner/workspace/start.sh"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[deployment]
+deploymentTarget = "vm"
+run = ["bash", "/home/runner/workspace/start.sh"]
