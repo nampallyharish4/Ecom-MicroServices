@@ -43,3 +43,6 @@ Desktop.ini
 **/mvnw.cmd
 **/.mvn/
 active.properties
+
+# Environment variables
+.env
