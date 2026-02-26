@@ -16,7 +16,7 @@ This project follows the **Database-per-Service** pattern, ensuring each service
 ```mermaid
 graph TD
     subgraph "Service Registry"
-        Eureka[Eureka Server :8761]
+        Eureka[Eureka Server :5000]
     end
 
     subgraph "Core Microservices"
@@ -59,7 +59,7 @@ graph TD
 | :------------- | :---------------------------------------------------------- |
 | **Frameworks** | Spring Boot 3.x, Spring Data JPA, Spring Web                |
 | **Cloud**      | Eureka (Discovery), OpenFeign (Communication), LoadBalancer |
-| **Database**   | MySQL (8.x)                                                 |
+| **Database**   | AWS RDS MySQL (8.x)                                         |
 | **Utilities**  | Lombok, MapStruct (DTO Mapping), SLF4J (Logging)            |
 | **Build Tool** | Maven                                                       |
 
@@ -69,7 +69,8 @@ graph TD
 
 | Service               | Port   | Database          | Primary Responsibility                   |
 | :-------------------- | :----- | :---------------- | :--------------------------------------- |
-| **Eureka Server**     | `8761` | N/A               | Centralized Service Registry & Discovery |
+| **Eureka Server**     | `5000` | N/A               | Centralized Service Registry & Discovery |
+| **Config Server**     | `8888` | N/A               | Centralized Application Configuration    |
 | **User Service**      | `8050` | `ecomuserms`      | Identity management & Role-based access  |
 | **Product Service**   | `8051` | `ecomproductms`   | Global product catalog & Stock control   |
 | **Cart Service**      | `8052` | `ecomcartms`      | Persistent shopping sessions per user    |
@@ -84,22 +85,40 @@ graph TD
 
 ### 1. Prerequisites
 
-- **Java 17 Development Kit**
-- **Maven 3.6+**
-- **MySQL Server** (Running on port 3306)
+- **Docker** and **Docker Compose**
+- **AWS RDS** (MySQL 8.x Instance) or local MySQL
 
 ### 2. Database Setup
 
-Ensure MySQL is running. Configuration is set to `createDatabaseIfNotExist=true`, so schemas will be created automatically upon service startup if credentials are correct (`root/root`).
+1. Create a `.env` file in the root directory.
+2. Add your AWS RDS or MySQL database credentials to it:
+   ```env
+   DB_HOST=your-database-endpoint.rds.amazonaws.com
+   DB_NAME=ecomdb
+   DB_USER=admin
+   DB_PASS=your_password
+   ```
 
-### 3. Startup Order (Priority)
+### 3. Running with Docker Compose
 
-To avoid registration delays, follow this sequence:
+Since there are 10 total microservices, they should be started in a staggered order to prevent overwhelming the server's CPU and database connection pool.
 
-1.  **Eureka Server** (Wait for Dashboard at http://localhost:8761)
-2.  **User & Product Services** (Critical data providers)
-3.  **Cart & Order Services**
-4.  **Payment & Shipping Services**
+```bash
+# 1. Start the Configuration and Registry Servers first
+docker compose up -d eureka-server config-server
+
+# wait ~30 seconds for them to boot
+
+# 2. Start the core data providers
+docker compose up -d user-service product-service
+
+# wait ~30 seconds
+
+# 3. Start the downstream dependents
+docker compose up -d cart-service inventory-service order-service payment-service shipping-service favourite-service
+```
+
+> **Note:** The Eureka Dashboard will be accessible at `http://localhost:5000` (or your EC2 IP).
 
 ---
 
@@ -130,7 +149,7 @@ For step-by-step API documentation and full JSON payloads, refer to the [**TESTI
 
 - [ ] Implement **Spring Cloud Gateway** for a single entry point.
 - [ ] Add **Resilience4j** Circuit Breakers for fault tolerance.
-- [ ] Centralize configuration using **Spring Cloud Config Server**.
+- [x] Centralize configuration using **Spring Cloud Config Server**.
 - [ ] Implement **Distributed Tracing** with Micrometer & Zipkin.
 
 ---
