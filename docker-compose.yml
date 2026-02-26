@@ -5,7 +5,7 @@ services:
   eureka-server:
     build: ./eureka-server
     ports:
-      - '8761:8761'
+      - '5000:5000'
     networks:
       - ecom-network
     restart: always
@@ -28,7 +28,8 @@ services:
     depends_on:
       - eureka-server
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:5000/eureka/
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=4
       - SPRING_DATASOURCE_URL=jdbc:mysql://${DB_HOST}:3306/ecomuserms?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
       - SPRING_DATASOURCE_USERNAME=${DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
@@ -44,7 +45,8 @@ services:
     depends_on:
       - eureka-server
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:5000/eureka/
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=4
       - SPRING_DATASOURCE_URL=jdbc:mysql://${DB_HOST}:3306/ecomproductms?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
       - SPRING_DATASOURCE_USERNAME=${DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
@@ -60,7 +62,8 @@ services:
     depends_on:
       - eureka-server
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:5000/eureka/
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=4
       - SPRING_DATASOURCE_URL=jdbc:mysql://${DB_HOST}:3306/inventory_db?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
       - SPRING_DATASOURCE_USERNAME=${DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
@@ -76,7 +79,8 @@ services:
     depends_on:
       - eureka-server
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:5000/eureka/
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=4
       - SPRING_DATASOURCE_URL=jdbc:mysql://${DB_HOST}:3306/ecomcartms?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
       - SPRING_DATASOURCE_USERNAME=${DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
@@ -92,7 +96,8 @@ services:
     depends_on:
       - eureka-server
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:5000/eureka/
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=4
       - SPRING_DATASOURCE_URL=jdbc:mysql://${DB_HOST}:3306/ecomfavouritems?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
       - SPRING_DATASOURCE_USERNAME=${DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
@@ -108,7 +113,8 @@ services:
     depends_on:
       - eureka-server
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:5000/eureka/
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=4
       - SPRING_DATASOURCE_URL=jdbc:mysql://${DB_HOST}:3306/ecomorderms?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
       - SPRING_DATASOURCE_USERNAME=${DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
@@ -124,7 +130,8 @@ services:
     depends_on:
       - eureka-server
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:5000/eureka/
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=4
       - SPRING_DATASOURCE_URL=jdbc:mysql://${DB_HOST}:3306/ecompaymentms?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
       - SPRING_DATASOURCE_USERNAME=${DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
@@ -140,7 +147,8 @@ services:
     depends_on:
       - eureka-server
     environment:
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:5000/eureka/
+      - SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE=4
       - SPRING_DATASOURCE_URL=jdbc:mysql://${DB_HOST}:3306/ecomshippingms?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
       - SPRING_DATASOURCE_USERNAME=${DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASS}
